@@ -1,196 +1,346 @@
-SmartSeason - README
+````markdown
 # SmartSeason - Field Management & Monitoring System
 
-SmartSeason is a full-stack web application for managing and monitoring agricultural fields. It provides real-time field status tracking, environmental condition monitoring, and field agent assignment capabilities.
+SmartSeason is a full-stack web application for managing and monitoring agricultural fields. It helps administrators and field agents track crop progress, monitor environmental risks, and manage field updates in real time.
+
+---
 
 ## Features
 
-### Core Functionality
-- **Field Management**: Create, read, update, and delete field records
-- **Field Stages**: Track fields through lifecycle stages (Planted, Growing, Ready, Harvested)
-- **Field Agents**: Assign field agents to specific fields and manage their updates
-- **Environmental Conditions Monitoring**: Track field conditions including:
+## Core Functionality
+
+- **Field Management** – Create, view, update, and delete field records  
+- **Field Stages** – Track crop lifecycle stages:
+  - Planted
+  - Growing
+  - Ready
+  - Harvested
+
+- **Field Agent Assignment** – Assign field agents to specific fields
+
+- **Environmental Monitoring** – Monitor field conditions such as:
   - Stress
   - Drought
   - Pest
   - Disease
   - Damage
   - Wilting
-  - None (healthy)
+  - None (Healthy)
 
-### Smart Status System
-The system automatically calculates field status based on:
-1. **Environmental Conditions**: If any risk condition is selected → Status = "At Risk"
-2. **Update Notes**: Scans notes for keywords (stress, drought, pest, disease, damage, wilting) → Status = "At Risk"
-3. **Days Since Planting**: Fields planted for 30+ days without updates → Status = "At Risk"
-4. **Lifecycle**: Harvested fields → Status = "Completed"
-5. **Default**: Active fields → Status = "Active"
+---
 
-### Role-Based Access
-- **Admin**: Full access to all fields, user management, field creation/editing
-- **Field Agent**: Access to assigned fields only, can submit field updates
+## Smart Status System
+
+The system automatically determines field status using the following logic:
+
+1. If field stage is **Harvested** → `Completed`
+2. If any environmental risk exists → `At Risk`
+3. If update notes contain keywords like pest, disease, drought, wilting, etc. → `At Risk`
+4. If field has no updates after 30+ days from planting → `At Risk`
+5. Otherwise → `Active`
+
+---
+
+## Role-Based Access
+
+### Admin
+- Full system access
+- Manage users
+- Create/Edit/Delete fields
+- Assign field agents
+- View reports and dashboard
+
+### Field Agent
+- Access assigned fields only
+- Submit updates
+- View field conditions and progress
+
+---
 
 ## Tech Stack
 
-### Backend
-- **Framework**: Django 4.2.30
-- **API**: Django REST Framework 3.15.1
-- **Database**: PostgreSQL (via psycopg)
-- **CORS**: django-cors-headers
-- **Authentication**: Token-based (Django REST Framework)
+## Backend
 
-### Frontend
-- **Framework**: React 18 with Vite
-- **Routing**: React Router
-- **Styling**: CSS-in-JS (inline styles)
-- **API Communication**: Axios
+- **Framework:** Django 4.2.30
+- **API:** Django REST Framework 3.15.1
+- **Database:** PostgreSQL
+- **Authentication:** Token-Based Authentication
+- **CORS:** django-cors-headers
+
+## Frontend
+
+- **Framework:** React 18 + Vite
+- **Routing:** React Router
+- **Styling:** CSS / Inline Styles
+- **API Calls:** Axios
+
+---
 
 ## Project Structure
+
+```text
 smartseason/
+│
 ├── backend/
-│ ├── manage.py
-│ ├── requirements.txt
-│ ├── db.sqlite3
-│ ├── field/
-│ │ ├── migrations/
-│ │ ├── models.py
-│ │ ├── serializers.py
-│ │ ├── views.py
-│ │ ├── urls.py
-│ │ ├── permissions.py
-│ │ └── tests.py
-│ └── smartseason/
-│ ├── settings.py
-│ ├── urls.py
-│ ├── asgi.py
-│ └── wsgi.py
+│   ├── manage.py
+│   ├── requirements.txt
+│   ├── db.sqlite3
+│   ├── field/
+│   │   ├── migrations/
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── permissions.py
+│   │   └── tests.py
+│   │
+│   └── smartseason/
+│       ├── settings.py
+│       ├── urls.py
+│       ├── asgi.py
+│       └── wsgi.py
+│
 └── frontend/
-├── src/
-│ ├── pages/
-│ │ ├── Login.jsx
-│ │ ├── Register.jsx
-│ │ ├── Dashboard.jsx
-│ │ ├── Fields.jsx
-│ │ └── FieldDetail.jsx
-│ ├── components/
-│ │ ├── Navbar.jsx
-│ │ ├── ProtectedRoute.jsx
-│ │ ├── StatusBadge.jsx
-│ │ └── Layout.jsx
-│ ├── contexts/
-│ │ └── AuthContext.jsx
-│ ├── services/
-│ │ ├── api.js
-│ │ └── apiHelpers.js
-│ └── App.jsx
-├── package.json
-├── vite.config.js
-└── index.html
+    ├── src/
+    │   ├── pages/
+    │   │   ├── Login.jsx
+    │   │   ├── Register.jsx
+    │   │   ├── Dashboard.jsx
+    │   │   ├── Fields.jsx
+    │   │   └── FieldDetail.jsx
+    │   │
+    │   ├── components/
+    │   │   ├── Navbar.jsx
+    │   │   ├── ProtectedRoute.jsx
+    │   │   ├── StatusBadge.jsx
+    │   │   └── Layout.jsx
+    │   │
+    │   ├── contexts/
+    │   │   └── AuthContext.jsx
+    │   │
+    │   ├── services/
+    │   │   ├── api.js
+    │   │   └── apiHelpers.js
+    │   │
+    │   └── App.jsx
+    │
+    ├── package.json
+    ├── vite.config.js
+    └── index.html
+````
+
+---
 
 ## Installation & Setup
 
-### Backend Setup
+## Backend Setup
 
-1. Navigate to backend directory:
 ```bash
 cd backend
 
-Create a virtual environment:
+# Create virtual environment
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-Install dependencies:
-pip install -r requirements.txt
-Run migrations:
-python manage.py migrate
-Create superuser (admin):
-python manage.py createsuperuser
-Start the development server:
-python manage.py runserver
-The backend API will be available at http://localhost:8000
-Frontend Setup
-Navigate to frontend directory:
-cd frontend
-Install dependencies:
-npm install
-Start the development server:
-npm run dev
-The frontend will be available at http://localhost:5173
-PI Endpoints
-Authentication
-POST /api/auth/token/ - Obtain auth token
-POST /api/auth/register/ - Register new user
-GET /api/users/profile/ - Get current user profile
-Fields
-GET /api/fields/ - List all fields (filtered by role)
-POST /api/fields/ - Create new field (admin only)
-GET /api/fields/{id}/ - Get field details
-PUT /api/fields/{id}/ - Update field (admin only)
-DELETE /api/fields/{id}/ - Delete field (admin only)
-Field Updates
-POST /api/field-updates/ - Submit field update (agents only)
-GET /api/fields/{field_id}/updates/ - Get field update history
-Dashboard
-GET /api/dashboard/stats/ - Get dashboard statistics
-Environmental Conditions Feature
-How It Works
-Selection: Admins select environmental conditions when creating or editing fields
-Status Calculation: The system automatically marks fields as "At Risk" if:
-Any risk condition is selected (stress, drought, pest, disease, damage, wilting)
-"None" is selected alone → field remains in normal status logic
-Visibility: Field agents immediately see status changes in their field list and details
-Using the Feature
-Go to "Add Field" or "Edit Field" (admin only)
-Scroll to "Environmental Conditions" section
-Check relevant conditions:
-Multiple conditions can be selected simultaneously
-Selecting "None" automatically clears other selections
-Selecting any risk condition clears the "None" option
-Save the field
-Status automatically updates based on selections
-Database Models
-User
-Extends Django's AbstractUser
-role: Admin or Field Agent
-username, email, first_name, last_name
-Field
-name: Field identifier
-crop_type: Type of crop (corn, wheat, soybeans, rice, cotton, etc.)
-planting_date: Date when crop was planted
-current_stage: Current lifecycle stage
-assigned_agent: ForeignKey to User (agent)
-environmental_conditions: JSONField storing list of conditions
-created_at, updated_at: Timestamps
-FieldUpdate
-field: ForeignKey to Field
-agent: ForeignKey to User (agent)
-stage: Stage at time of update
-notes: Agent observations
-created_at: Timestamp
-Authentication
-The application uses token-based authentication:
 
-Register: New users register with username, email, password, and role
-Login: Users obtain an auth token by providing credentials
-Protected Routes: Endpoints require valid token in Authorization header
-Token Storage: Frontend stores token in localStorage
-Permissions
-Admin Users: Full access to all fields and user management
-Field Agents: Can only view and update fields assigned to them
-Unauthenticated: Only access to login/register endpoints
-Status Badge Colors
-Active (Green): Field is healthy and progressing normally
-At Risk (Red): Environmental issues detected
-Completed (Gray): Field has been harvested
-Recent Updates
-Environmental Conditions Feature (v1.1)
-Added multi-select environmental conditions field
-Implemented smart status override logic
-Added condition display in field details
-Integrated with form validation
-Future Enhancements
-Weather integration API
-Pest/disease detection using ML
-SMS notifications for at-risk fields
-Mobile app support
-Historical trend analysis
-Crop yield predictions
+# Activate environment
+source venv/bin/activate
+# Windows:
+venv\Scripts\activate
+
+# Install packages
+pip install -r requirements.txt
+
+# Run migrations
+python manage.py migrate
+
+# Create admin user
+python manage.py createsuperuser
+
+# Start backend server
+python manage.py runserver
+```
+
+Backend runs at:
+
+```text
+http://localhost:8000
+```
+
+---
+
+## Frontend Setup
+
+```bash
+cd frontend
+
+# Install packages
+npm install
+
+# Start frontend server
+npm run dev
+```
+
+Frontend runs at:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## API Endpoints
+
+## Authentication
+
+| Method | Endpoint            | Description          |
+| ------ | ------------------- | -------------------- |
+| POST   | /api/auth/token/    | Obtain login token   |
+| POST   | /api/auth/register/ | Register new user    |
+| GET    | /api/users/profile/ | Current user profile |
+
+---
+
+## Fields
+
+| Method | Endpoint          | Description     |
+| ------ | ----------------- | --------------- |
+| GET    | /api/fields/      | List all fields |
+| POST   | /api/fields/      | Create field    |
+| GET    | /api/fields/{id}/ | Field details   |
+| PUT    | /api/fields/{id}/ | Update field    |
+| DELETE | /api/fields/{id}/ | Delete field    |
+
+---
+
+## Field Updates
+
+| Method | Endpoint                  | Description    |
+| ------ | ------------------------- | -------------- |
+| POST   | /api/field-updates/       | Submit update  |
+| GET    | /api/fields/{id}/updates/ | Update history |
+
+---
+
+## Dashboard
+
+| Method | Endpoint              | Description          |
+| ------ | --------------------- | -------------------- |
+| GET    | /api/dashboard/stats/ | Dashboard statistics |
+
+---
+
+## Environmental Conditions Logic
+
+### How It Works
+
+* Admin selects conditions during field creation/editing
+* If any risk condition selected → Status becomes **At Risk**
+* If **None** selected alone → normal logic applies
+* Field agents immediately see updated status
+
+### Selection Rules
+
+* Multiple risk conditions can be selected
+* Selecting **None** removes other options
+* Selecting any risk removes **None**
+
+---
+
+## Database Models
+
+## User
+
+* Extends Django `AbstractUser`
+* `role`
+* `username`
+* `email`
+* `first_name`
+* `last_name`
+
+## Field
+
+* `name`
+* `crop_type`
+* `planting_date`
+* `current_stage`
+* `assigned_agent`
+* `environmental_conditions`
+* `created_at`
+* `updated_at`
+
+## FieldUpdate
+
+* `field`
+* `agent`
+* `stage`
+* `notes`
+* `created_at`
+
+---
+
+## Authentication System
+
+* Users register with credentials + role
+* Login returns auth token
+* Protected routes require token
+* Token stored in frontend localStorage
+
+---
+
+## Permissions
+
+### Admin Users
+
+* Full access
+
+### Field Agents
+
+* Assigned fields only
+
+### Guests
+
+* Login/Register only
+
+---
+
+## Status Badge Colors
+
+| Status    | Color | Meaning          |
+| --------- | ----- | ---------------- |
+| Active    | Green | Healthy field    |
+| At Risk   | Red   | Problem detected |
+| Completed | Gray  | Harvested        |
+
+---
+
+## Recent Updates (v1.1)
+
+* Added environmental condition multi-select
+* Smart status override logic
+* Condition display in field details
+* Improved form validation
+
+---
+
+## Future Enhancements
+
+* Weather API integration
+* Disease detection using AI
+* SMS alerts
+* Mobile application
+* Historical analytics
+* Crop yield prediction
+
+---
+
+## License
+
+MIT License
+
+---
+
+## Author
+
+SmartSeason Development Team
+
+```
+```
