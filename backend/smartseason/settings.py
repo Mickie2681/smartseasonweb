@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5o!8*is8id=rcnuf8px3bz^qx99=kr%0tfefjzf4-_=pf009(n'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-5o!8*is8id=rcnuf8px3bz^qx99=kr%0tfefjzf4-_=pf009(n)')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
 
 # Application definition
@@ -81,11 +83,11 @@ WSGI_APPLICATION = 'smartseason.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'season_db',
-        'USER': 'seasonadmin',
-        'PASSWORD': 'Pilhaw@20',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': config('DB_NAME', default='season_db'),
+        'USER': config('DB_USER', default='seasonadmin'),
+        'PASSWORD': config('DB_PASSWORD', default='Pilhaw@20'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
@@ -124,7 +126,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # REST Framework settings
 REST_FRAMEWORK = {
@@ -137,7 +140,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-# CORS settings
+# CORS setED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:5173', cast=Csv())
 CORS_ALLOW_ALL_ORIGINS = True  # For development only
 
 # Custom User Model

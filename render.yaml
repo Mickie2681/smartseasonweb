@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: smartseason-api
+    env: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt && cd backend && python manage.py collectstatic --noinput && python manage.py migrate
+    startCommand: cd backend && gunicorn smartseason.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: PYTHON_VERSION
+        value: "3.9"
+    routes:
+      - path: /api
+        destination: /api
+
+  - type: static_site
+    name: smartseason-web
+    staticPublishPath: frontend/dist
+    buildCommand: cd frontend && npm install && npm run build
+    envVars:
+      - key: VITE_API_URL
+        value: https://smartseason-api.onrender.com
+
+databases:
+  - name: smartseason-db
+    plan: free
+    version: "14"
+    initializer:
+      command: cd backend && python manage.py migrate
