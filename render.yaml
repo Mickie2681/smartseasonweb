@@ -14,7 +14,7 @@ services:
       - path: /api
         destination: /api
 
-  - type: static_site
+  - type: static
     name: smartseason-web
     staticPublishPath: frontend/dist
     buildCommand: cd frontend && npm install && npm run build
