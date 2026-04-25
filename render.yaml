@@ -16,6 +16,4 @@ services:
 
 databases:
   - name: smartseason-db
-    databaseName: smartseason_db
     plan: free
-    postgresVersion: "14"
