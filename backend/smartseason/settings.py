@@ -86,8 +86,7 @@ DATABASES = {
         'NAME': config('DB_NAME', default='season_db'),
         'USER': config('DB_USER', default='seasonadmin'),
         'PASSWORD': config('DB_PASSWORD', default='Pilhaw@20'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+        
     }
 }
 
