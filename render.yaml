@@ -13,9 +13,6 @@ services:
       - key: ALLOWED_HOSTS
         scope: runtime
         value: "smartseason-api.onrender.com,localhost"
-    routes:
-      - path: /api
-        destination: /api
 
 databases:
   - name: smartseason-db
