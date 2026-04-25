@@ -80,14 +80,9 @@ WSGI_APPLICATION = 'smartseason.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='season_db'),
-        'USER': config('DB_USER', default='seasonadmin'),
-        'PASSWORD': config('DB_PASSWORD', default='Pilhaw@20'),
-        
-    }
+    "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
 
