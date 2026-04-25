@@ -155,3 +155,12 @@ class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdmin]
+
+
+class AgentListView(generics.ListAPIView):
+    """List all field agents (accessible to authenticated users for assignment)."""
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return User.objects.filter(role='agent')

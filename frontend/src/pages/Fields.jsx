@@ -39,21 +39,28 @@ const Fields = () => {
     }
   };
 
-   const fetchUsers = async () => {
-     try {
-       const response = await fetch('http://localhost:8000/api/users/', {
-         headers: {
-           'Authorization': `Token ${localStorage.getItem('token')}`,
-         },
-       });
-       if (response.ok) {
-         const data = await response.json();
-         setUsers(data);
-       }
-     } catch (err) {
-       console.error('Failed to fetch users:', err);
-     }
-   };
+  const fetchUsers = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/agents/`, {
+        headers: {
+          'Authorization': `Token ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        console.error('Error fetching agents. Status:', response.status);
+        if (response.status === 403) {
+          console.error('Permission denied. Make sure you are authenticated.');
+        }
+        return;
+      }
+      const data = await response.json();
+      setUsers(data);
+    } catch (err) {
+      console.error('Failed to fetch agents:', err);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
