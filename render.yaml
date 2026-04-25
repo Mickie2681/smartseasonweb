@@ -10,17 +10,12 @@ services:
         value: "False"
       - key: PYTHON_VERSION
         value: "3.9"
+      - key: ALLOWED_HOSTS
+        scope: runtime
+        value: "smartseason-api.onrender.com,localhost"
     routes:
       - path: /api
         destination: /api
-
-  - type: static
-    name: smartseason-web
-    staticPublishPath: frontend/dist
-    buildCommand: cd frontend && npm install && npm run build
-    envVars:
-      - key: VITE_API_URL
-        value: https://smartseason-api.onrender.com
 
 databases:
   - name: smartseason-db
