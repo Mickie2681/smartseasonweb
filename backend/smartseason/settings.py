@@ -7,12 +7,12 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- SECURITY ---
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-default-key-change-this-in-production')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-5o!8*is8id=rcnuf8px3bz^qx99=kr%0tfefjzf4-_=pf009(n)')
 
-# DEBUG should be False in production (Render)
+# Set DEBUG to False in Render via environment variable
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-# Allow Render domain, Vercel, and local
+# Allow Render domains and local development
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS', 
     default='localhost,127.0.0.1,.onrender.com', 
@@ -27,18 +27,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Third-party apps
+    # Third-party
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    # Your apps
+    # Local apps
     'field',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # Must be first
+    'corsheaders.middleware.CorsMiddleware', # Must be at the top
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files on Render
+    'whitenoise.middleware.WhiteNoiseMiddleware', # For static files on Render
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -68,7 +68,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'smartseason.wsgi.application'
 
 # --- Database ---
-# Uses DATABASE_URL if available (Render/Production), otherwise local Postgres
 if os.environ.get('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.config(
@@ -88,25 +87,27 @@ else:
         }
     }
 
-# --- Password validation ---
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
-
-# --- Internationalization ---
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
-
 # --- Static files ---
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# This allows Whitenoise to serve compressed/cached files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Use WhiteNoise's storage for compression (safer version for first deploy)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+# --- CORS & CSRF ---
+CORS_ALLOW_ALL_ORIGINS = config('CORS_ALLOW_ALL_ORIGINS', default=False, cast=bool)
+
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='http://localhost:5173,https://smartseasonweb.vercel.app',
+    cast=Csv()
+)
+
+# Trust the Vercel frontend for secure requests
+CSRF_TRUSTED_ORIGINS = [
+    "https://smartseasonweb.vercel.app",
+    "https://*.onrender.com"
+]
 
 # --- REST Framework ---
 REST_FRAMEWORK = {
@@ -119,24 +120,9 @@ REST_FRAMEWORK = {
     ],
 }
 
-# --- CORS & CSRF Settings ---
-CORS_ALLOW_ALL_ORIGINS = config('CORS_ALLOW_ALL_ORIGINS', default=False, cast=bool)
-
-# Add your Vercel URL here
-CORS_ALLOWED_ORIGINS = config(
-    'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:5173,http://localhost:3000,https://smartseasonweb.vercel.app',
-    cast=Csv()
-)
-
-# Required for POST/PUT requests from Vercel to Render
-CSRF_TRUSTED_ORIGINS = [
-    "https://smartseasonweb.vercel.app",
-    "https://*.onrender.com"
-]
-
 # --- Custom Settings ---
 AUTH_USER_MODEL = 'field.User'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 FIELD_STAGE_CHOICES = [
     ('planted', 'Planted'),
@@ -144,5 +130,3 @@ FIELD_STAGE_CHOICES = [
     ('ready', 'Ready'),
     ('harvested', 'Harvested'),
 ]
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
