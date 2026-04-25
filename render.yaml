@@ -16,7 +16,6 @@ services:
 
 databases:
   - name: smartseason-db
+    databaseName: smartseason_db
     plan: free
-    version: "14"
-    initializer:
-      command: cd backend && python manage.py migrate
+    postgresVersion: "14"
